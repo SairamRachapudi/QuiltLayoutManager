@@ -7,10 +7,8 @@ package com.webileapps.quiltlayoutmanager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-
 import com.webileapps.quiltlayoutmanager.adapter.SampleAdapter;
 import com.webileapps.quiltlayoutmanager.layout.QuiltLayoutManager;
-
 import java.util.ArrayList;
 import java.util.List;
 

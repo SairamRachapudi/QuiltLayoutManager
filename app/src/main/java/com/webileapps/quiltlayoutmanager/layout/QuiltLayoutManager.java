@@ -21,8 +21,8 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
     private static LinkedHashMap<Integer,Bound> viewBoundsMap = new LinkedHashMap<>();
     private int mFirstVisiblePosition=-1;
 
-    /*
-    This method is used to reset the variables as we shouldn't store much previous state of RecyclerView
+    /**
+     *  This method is used to reset the variables as we shouldn't store much previous state of RecyclerView
      */
     private void initializeValues() {
         layoutHeight = getHeight();
@@ -36,8 +36,9 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         }
     }
 
-    /*
-    This is main method which calculates the Bounds of each view and store them in HashMap<AdapterPos,Bound>
+    /**
+     * This is main method which calculates the Bounds of each view and store them in HashMap<AdapterPos,Bound>
+     * @param recycler
      */
     private void calculateBound1sForViews(RecyclerView.Recycler recycler) {
         for(int i=0;i<getItemCount();i++){
@@ -54,13 +55,15 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         initializeValues();
         detachAndScrapAttachedViews(recycler);
         calculateBound1sForViews(recycler);
-        fillDown(recycler, state, 0);
+        fillDown(recycler, state);
     }
 
-    /*
-     This method is used to fill the views on screen when user has scrolled downwards
+    /**
+     * This method is used to fill the views on screen when user has scrolled downwards
+     * @param recycler
+     * @param state
      */
-    private void fillDown(RecyclerView.Recycler recycler, RecyclerView.State state, int delta) {
+    private void fillDown(RecyclerView.Recycler recycler, RecyclerView.State state) {
         viewCache.clear();
         int  anchorPos = mFirstVisiblePosition;
         boolean fillDown = true;
@@ -110,10 +113,12 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         }
     }
 
-    /*
-     This method is used to fill the views on screen when user has scrolled upwards
+    /**
+     * This method is used to fill the views on screen when user has scrolled upwards
+     * @param recycler
+     * @param state
      */
-    private void fillUp(RecyclerView.Recycler recycler, RecyclerView.State state, int delta) {
+    private void fillUp(RecyclerView.Recycler recycler, RecyclerView.State state) {
         viewCache.clear();
         int  anchorPos = mFirstVisiblePosition;
         boolean fillUp = true;
@@ -179,10 +184,12 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         return null;
     }
 
-    /*
-     Allocate the space for Type1 and Type 2 views
-     Type1 - (X,X) (width,height)
-     Type2 - (2X,X)
+    /**
+     * Allocate the space for Type1 and Type 2 views
+     * Type1 - (X,X) (width,height)
+     * Type2 - (2X,X)
+     * @param viewItem
+     * @return
      */
     private Bound allotSpaceForViewType12(View viewItem) {
         CellView view = (CellView) viewItem.getTag();
@@ -223,10 +230,12 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         return Bound1;
     }
 
-    /*
-     Allocate the space for Type3 and Type 4 views
-     Type3 - (X,2X) (width,height)
-     Type4 - (2X,2X)
+    /**
+     * Allocate the space for Type3 and Type 4 views
+     * Type3 - (X,2X) (width,height)
+     * Type4 - (2X,2X)
+     * @param viewItem view item
+     * @return Bound of the view
      */
     private Bound allotSpaceForViewType34(View viewItem) {
         CellView view = (CellView) viewItem.getTag();
@@ -345,7 +354,7 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
             offsetChildrenVertical(-delta);
             setScrollDirection(DIRECTION_UP);
             computeTotalOffset(DIRECTION_UP,delta);
-            fillUp(recycler,state,delta);
+            fillUp(recycler,state);
         } else if (dy > 0) {
             View lastView = getBottomView();
             int lastViewAdapterPos = getPosition(lastView);
@@ -359,13 +368,15 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
             offsetChildrenVertical(-delta);
             setScrollDirection(DIRECTION_DOWN);
             computeTotalOffset(DIRECTION_DOWN,delta);
-            fillDown(recycler, state,delta);
+            fillDown(recycler, state);
         }
         return delta;
     }
 
-    /*
-     Checking whether all Items got displayed in layout till last adapter position
+    /**
+     * Checking whether all Items got displayed in layout till last adapter position
+     * @param direction
+     * @return true if all items are displayed in current state else false
      */
     private boolean isAllDisplayed(int direction) {
         int lastItem = getItemCount()-1;
@@ -407,8 +418,9 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         return false;
     }
 
-    /*
-     Get the bottom most view visible in screen
+    /**
+     * Get the bottom most view visible in current state
+     * @return bottom most view in current state
      */
     private View getBottomView() {
         int bottom = getHeight();
@@ -425,9 +437,9 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         return bottomView;
     }
 
-    /*
-     Setting the scroll direction
-     Scroll Direction is of 2 types DIRECTION_UP and DIRECTION_DOWN
+    /**
+     * Setting the scroll direction
+     * @param direction Direction is of 2 types DIRECTION_UP and DIRECTION_DOWN
      */
     private void setScrollDirection(int direction){
         int state = getState(direction);
@@ -449,10 +461,11 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         }
     }
 
-    /*
-      Calculating the first visible adapter position for DIRECTION_DOWN scroll and
-      last bottom view for DIRECTION_UP scroll
-      */
+    /**
+     * Calculating the first visible adapter position for DIRECTION_DOWN scroll and
+     * last bottom view for DIRECTION_UP scroll
+     * @param state
+     */
     private void computeFirstVisiblePosition(int state) {
         switch (state){
             case 1:
@@ -491,9 +504,14 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         }
     }
 
-    /*
-        Get the current state of the  RecyclerView comaparing with the last scroll direction.
-        These states are defined by me.
+    /**
+
+     */
+    /**
+     * Get the current state of the  RecyclerView comaparing with the last scroll direction.
+     * These states are defined by me.
+     * @param direction
+     * @return state
      */
     private int getState(int direction) {
         int state=1;
@@ -509,9 +527,9 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
         return state;
     }
 
-    /*
-        Span is a 1/3rd part of device.
-        Screen is divided into 3 vertical spans and views will be accomodated in these spans.
+    /**
+     * Span is a 1/3rd part of device.
+     * Screen is divided into 3 vertical spans and views will be accomodated in these spans.
      */
     class Span {
         int heightFilled = 0;
@@ -540,6 +558,11 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
             return true;
         }
 
+        /**
+         * This method is used to find at which height the requested space is available can fit into
+         * @param height View Height
+         * @return First available height
+         */
         public int getFirstAvailableLocation(int height) {
             if (heightFilled == 0) {
                 return 0;
@@ -564,6 +587,11 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
             return -1;
         }
 
+        /**
+         * Get the available Cell to place the View in this Span
+         * @param view View to be placed
+         * @return Cell where the view can fit in this span
+         */
         public Cell getCellForView(CellView view) {
         int height = view.height;
             if (heightFilled == 0) {
@@ -634,9 +662,13 @@ public class QuiltLayoutManager extends RecyclerView.LayoutManager  {
     }
 }
 
-
+/**
+ * This is a helper class for GapFill Algorithm
+ */
 class Cell {
+    // Top of View
     int i;
+    // Bottom of View
     int j;
 
     public Cell(int i, int j) {
@@ -645,6 +677,9 @@ class Cell {
     }
 }
 
+/**
+ * This is a helper class for GapFill Algorithm
+ */
 class Bound {
     int left;
     int top;

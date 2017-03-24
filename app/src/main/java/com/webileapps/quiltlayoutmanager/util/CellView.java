@@ -4,6 +4,9 @@ package com.webileapps.quiltlayoutmanager.util;
  * Created by sairam on 14/3/17.
  */
 
+/**
+ * This is a helper class for GapFill Algorithm
+ */
 public class CellView {
     public int width;
     public int height;
